@@ -3,101 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KobiScope: Teknik Analiz ve Fizibilite Raporu</title>
+    <title>KobiScope: 2209-B Vizyon ve Teknik Rapor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Google Fonts: Inter for UI, Roboto Mono for Data -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Slate-50 */
-            color: #334155; /* Slate-700 */
-        }
-        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
         .font-mono { font-family: 'Roboto Mono', monospace; }
 
-        /* Sidebar Styling */
-        .sidebar-link {
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-        .sidebar-link:hover {
-            background-color: #e2e8f0;
-            color: #0f172a;
-        }
-        .sidebar-link.active {
-            background-color: #cbd5e1;
-            border-left-color: #0369a1; /* Sky-700 */
-            color: #0c4a6e; /* Sky-900 */
-            font-weight: 600;
-        }
+        /* Sidebar & Nav */
+        .sidebar-link { transition: all 0.2s; border-left: 3px solid transparent; }
+        .sidebar-link:hover { background-color: #e2e8f0; color: #0f172a; }
+        .sidebar-link.active { background-color: #cbd5e1; border-left-color: #0369a1; color: #0c4a6e; font-weight: 600; }
 
-        /* Card & Chart Styling */
-        .card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
+        /* Cards */
+        .card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 350px;
-            max-width: 100%;
-        }
-
-        /* Animations */
+        .chart-container { position: relative; width: 100%; height: 350px; max-width: 100%; }
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Interactive Elements */
-        .tech-pill {
-            transition: all 0.2s;
-        }
-        .tech-pill:hover {
-            transform: scale(1.05);
-        }
+        /* Tubitak Badge */
+        .tubitak-badge { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+
+        /* Team Card Hover */
+        .team-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: #94a3b8; }
+        
+        /* Roadmap Line */
+        .roadmap-line { position: absolute; left: 24px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; z-index: 0; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden text-sm md:text-base">
 
     <!-- SIDEBAR -->
     <aside class="w-64 bg-white border-r border-slate-200 flex-col hidden md:flex z-10">
-        <div class="p-6 border-b border-slate-100">
-            <div class="flex items-center gap-2 text-sky-800 font-bold text-xl tracking-tight">
-                <div class="w-8 h-8 bg-sky-700 rounded flex items-center justify-center text-white shadow-sm">K</div>
+        <div class="p-6 border-b border-slate-100 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-red-50 rounded-bl-full -mr-8 -mt-8"></div>
+            <div class="flex items-center gap-2 text-slate-800 font-bold text-xl tracking-tight relative z-10">
+                <div class="w-8 h-8 bg-slate-800 rounded flex items-center justify-center text-white shadow-sm">K</div>
                 KobiScope
             </div>
+            <div class="mt-3">
+                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold tracking-wide tubitak-badge shadow-sm">
+                    TÜBİTAK 2209-B
+                </span>
+            </div>
             <div class="mt-2 text-[10px] text-slate-400 font-mono uppercase tracking-wider">
-                Teknik Fizibilite Raporu
-                <br>Ver: 2.0.4 (Stable)
+                Sanayi İşbirliği Projesi
+                <br>Ar-Ge Dosyası v3.1
             </div>
         </div>
         
         <nav class="flex-1 overflow-y-auto py-4 space-y-1">
             <a href="#" onclick="showSection('ozet')" class="sidebar-link active flex items-center px-6 py-3 text-slate-600">
-                <span class="w-5 mr-3">📊</span> Yönetici Özeti
+                <span class="w-5 mr-3">📊</span> Proje Vizyonu
+            </a>
+            <a href="#" onclick="showSection('ekip')" class="sidebar-link flex items-center px-6 py-3 text-slate-600">
+                <span class="w-5 mr-3">👥</span> Ekip & Danışmanlar
+            </a>
+            <a href="#" onclick="showSection('roadmap')" class="sidebar-link flex items-center px-6 py-3 text-slate-600">
+                <span class="w-5 mr-3">🚀</span> Yol Haritası (Fazlar)
             </a>
             <a href="#" onclick="showSection('teknoloji')" class="sidebar-link flex items-center px-6 py-3 text-slate-600">
-                <span class="w-5 mr-3">🧬</span> Hibrit Mimari
+                <span class="w-5 mr-3">🧬</span> Akademik Yöntem
             </a>
             <a href="#" onclick="showSection('simulasyon')" class="sidebar-link flex items-center px-6 py-3 text-slate-600">
-                <span class="w-5 mr-3">⚡</span> Algoritmik Test
-            </a>
-            <a href="#" onclick="showSection('sektor')" class="sidebar-link flex items-center px-6 py-3 text-slate-600">
-                <span class="w-5 mr-3">🏭</span> Sektörel Kullanım
+                <span class="w-5 mr-3">⚡</span> Algoritma Testi
             </a>
         </nav>
 
         <div class="p-4 border-t border-slate-100 bg-slate-50">
             <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="text-xs text-slate-500 font-medium">Sistem Hazır</span>
+                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></div>
+                <div>
+                    <span class="block text-xs font-bold text-slate-700">Başvuru Yapıldı</span>
+                    <span class="text-[10px] text-slate-500">Değerlendirme Bekleniyor</span>
+                </div>
             </div>
-            <p class="text-[10px] text-slate-400 mt-1">Son Güncelleme: <span id="lastUpdate"></span></p>
         </div>
     </aside>
 
@@ -105,72 +88,85 @@
     <main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8 relative">
         <!-- Top Bar for Mobile -->
         <div class="md:hidden mb-4 flex justify-between items-center bg-white p-4 rounded shadow border border-slate-200">
-            <span class="font-bold text-sky-800">KobiScope Rapor</span>
+            <span class="font-bold text-slate-800">KobiScope 2209-B</span>
             <select onchange="showSection(this.value)" class="bg-slate-100 border-none text-sm p-1 rounded">
-                <option value="ozet">Özet</option>
-                <option value="teknoloji">Teknoloji</option>
-                <option value="simulasyon">Simülasyon</option>
-                <option value="sektor">Sektör</option>
+                <option value="ozet">Vizyon</option>
+                <option value="ekip">Ekip</option>
+                <option value="roadmap">Roadmap</option>
+                <option value="teknoloji">Yöntem</option>
+                <option value="simulasyon">Test</option>
             </select>
         </div>
 
-        <!-- 1. YÖNETİCİ ÖZETİ -->
+        <!-- 1. VİZYON & ÖZET -->
         <section id="ozet" class="fade-in max-w-6xl mx-auto space-y-6">
             <header class="flex justify-between items-end border-b border-slate-200 pb-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-800">Stratejik Fizibilite ve Pazar Analizi</h1>
-                    <p class="text-slate-500 mt-1">KobiScope Projesi: Pazar Boşluğu ve Teknik Yeterlilik Değerlendirmesi</p>
+                    <h1 class="text-2xl font-bold text-slate-800">Sanayiye Yönelik Akıllı Stok Yönetimi</h1>
+                    <p class="text-slate-500 mt-1">"Göz Kararı" Yönetimden, Veriye Dayalı Karar Destek Sistemine Geçiş</p>
                 </div>
-                <div class="hidden md:block">
-                    <span class="bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded text-xs font-bold border border-emerald-200 tracking-wide uppercase">Durum: Yüksek Potansiyel</span>
+                <div class="hidden md:block text-right">
+                    <span class="block text-xs text-slate-400 uppercase font-bold">Proje Kategorisi</span>
+                    <span class="text-sky-700 font-bold text-sm bg-sky-50 px-2 py-1 rounded border border-sky-100">Endüstri 4.0 / Yapay Zeka</span>
                 </div>
             </header>
 
+            <!-- Blue Ocean Strategy -->
+            <div class="card p-6 border-l-4 border-l-blue-600 bg-gradient-to-r from-blue-50 to-white">
+                <h2 class="text-lg font-bold text-blue-900 mb-2 flex items-center">
+                    <span class="text-2xl mr-2">🌊</span> Blue Ocean Stratejisi
+                </h2>
+                <p class="text-sm text-blue-800 leading-relaxed">
+                    Türkiye pazarında ya <strong>"Çok Basit (Excel)"</strong> ya da <strong>"Çok Karmaşık (SAP/ERP)"</strong> çözümler mevcut. KobiScope, bu iki uç arasındaki devasa boşluğu doldurarak rekabetsiz bir pazar (Mavi Okyanus) yaratıyor. "Erişilebilir İleri Teknoloji" ile KOBİ'lere kurumsal tahmin gücünü esnaf basitliğinde sunuyoruz.
+                </p>
+            </div>
+
             <!-- KPI Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="card p-4 border-t-4 border-t-sky-500">
-                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Hedef Pazar</div>
-                    <div class="text-xl font-bold text-slate-800">KOBİ & Perakende</div>
-                    <p class="text-xs text-slate-500 mt-1">Blue Ocean Stratejisi</p>
+                <div class="card p-4 border-t-4 border-t-red-500">
+                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Mevcut Durum</div>
+                    <div class="text-xl font-bold text-slate-800">%60 Manuel</div>
+                    <p class="text-xs text-slate-500 mt-1">KOBİ'ler Excel/Defter kullanıyor</p>
                 </div>
                 <div class="card p-4 border-t-4 border-t-indigo-500">
-                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Teknik Mimari</div>
-                    <div class="text-xl font-bold text-slate-800">Hibrit Ensemble</div>
-                    <p class="text-xs text-slate-500 mt-1">Croston + XGBoost + Prophet</p>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">KobiScope Çözümü</div>
+                    <div class="text-xl font-bold text-slate-800">Sanal Danışman</div>
+                    <p class="text-xs text-slate-500 mt-1">Otonom Satın Alma Önerisi</p>
                 </div>
                 <div class="card p-4 border-t-4 border-t-emerald-500">
-                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Rekabet Avantajı</div>
-                    <div class="text-xl font-bold text-slate-800">Oto-Seçim (AutoML)</div>
-                    <p class="text-xs text-slate-500 mt-1">Veri tipine dinamik adaptasyon</p>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Hedeflenen Doğruluk</div>
+                    <div class="text-xl font-bold text-slate-800">MAPE < %15</div>
+                    <p class="text-xs text-slate-500 mt-1">Hibrit Algoritma ile</p>
                 </div>
                 <div class="card p-4 border-t-4 border-t-orange-500">
-                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">ROI Beklentisi</div>
-                    <div class="text-xl font-bold text-slate-800">%25 - %40</div>
-                    <p class="text-xs text-slate-500 mt-1">Stok maliyeti optimizasyonu</p>
+                    <div class="text-slate-400 text-[10px] font-bold uppercase mb-1">Ekonomik Etki</div>
+                    <div class="text-xl font-bold text-slate-800">Nakit Akışı</div>
+                    <p class="text-xs text-slate-500 mt-1">Atıl stoku nakite çevirme</p>
                 </div>
             </div>
 
             <!-- Content Grid -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Market Analysis Text -->
                 <div class="lg:col-span-1 space-y-4">
-                    <div class="card p-5 h-full">
-                        <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                            Pazar Konumlandırması
+                    <div class="card p-5 h-full border-l-4 border-l-slate-800 bg-slate-900 text-white">
+                        <h3 class="font-bold text-lg mb-4 flex items-center text-white">
+                            <span class="text-2xl mr-2">🎯</span> Vizyon Beyanı
                         </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
-                            Mevcut yerli ERP pazarı, <strong>finansal muhasebe</strong> odaklıdır. İleri seviye stok yönetimi (Inventory Optimization) modülleri ya yoktur ya da çok pahalı global ERP'lerin tekelindedir.
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4 italic">
+                            "Türkiye'deki KOBİ'lerin yaşadığı en büyük kan kaybı olan 'yanlış stok kararlarını', Yapay Zekâ teknolojisiyle kökten çözüyoruz.
                         </p>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            KobiScope; istatistiksel modelleri (Croston) modern ML (XGBoost) ile birleştirerek, "Erişilebilir Yüksek Teknoloji" boşluğunu doldurmaktadır.
+                        <p class="text-sm text-slate-300 leading-relaxed italic">
+                            Amacımız; pahalı kurumsal sistemlerin tahmin gücünü, teknik bilgiye ihtiyaç duymayan 'esnafın' bile kullanabileceği basitlikte sunmaktır."
                         </p>
+                        <div class="mt-4 pt-4 border-t border-slate-700">
+                            <span class="text-xs font-bold text-sky-400 uppercase tracking-wide">Strateji: GOTS</span>
+                            <p class="text-xs text-slate-400 mt-1">Global Olmaya Hazır Yerel Çözüm</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Market Gap Chart -->
                 <div class="lg:col-span-2 card p-5">
-                    <h3 class="font-bold text-slate-800 mb-2 text-sm">Rekabet Matrisi: Yetenek vs. Maliyet</h3>
+                    <h3 class="font-bold text-slate-800 mb-2 text-sm">Pazar Konumlandırması (Blue Ocean)</h3>
                     <div class="chart-container" style="height: 280px;">
                         <canvas id="marketGapChart"></canvas>
                     </div>
@@ -178,18 +174,204 @@
             </div>
         </section>
 
-        <!-- 2. TEKNOLOJİ MATRİSİ -->
+        <!-- 2. EKİP VE DANIŞMANLAR -->
+        <section id="ekip" class="hidden fade-in max-w-6xl mx-auto space-y-8">
+            <header class="border-b border-slate-200 pb-4">
+                <h1 class="text-2xl font-bold text-slate-800">Proje Ekibi ve Danışman Kadrosu</h1>
+                <p class="text-slate-500 mt-1">Akademi ve Sanayi İşbirliği ile Güçlendirilmiş Kadro</p>
+            </header>
+            
+            <!-- Danışmanlar -->
+            <div>
+                <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Akademik ve Sanayi Danışmanları</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="card p-5 border-l-4 border-l-slate-800 bg-slate-50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded bg-slate-200 flex items-center justify-center text-2xl">🎓</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Akademik Danışman</h3>
+                                <p class="text-sm font-semibold text-slate-600">Doç. Dr. (Muhasebe & Finansman)</p>
+                                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                    Projenin finansal modellemesi, maliyet optimizasyon algoritmaları ve akademik literatür taraması konularında rehberlik etmektedir.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-5 border-l-4 border-l-slate-800 bg-slate-50">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded bg-slate-200 flex items-center justify-center text-2xl">🏭</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg">Sanayi Danışmanı</h3>
+                                <p class="text-sm font-semibold text-slate-600">Endüstri Mühendisi (Saha Tecrübesi)</p>
+                                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                    İmalat sanayisindeki gerçek saha problemleri, üretim planlama süreçleri ve ERP entegrasyon gereksinimleri konusunda mentorluk yapmaktadır.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proje Ekibi -->
+            <div>
+                <h2 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Çekirdek Proje Ekibi (7 Kişilik Yazılım Mühendisliği Ekibi)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Afra Söylemez -->
+                    <div class="card p-5 team-card border-t-4 border-t-purple-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold">AS</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Afra Söylemez</h3>
+                                <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded">ML Model Geliştirme</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">YZ algoritmalarını kurma, model mimarisini belirleme.</p>
+                    </div>
+
+                    <!-- Aybike Biçen -->
+                    <div class="card p-5 team-card border-t-4 border-t-blue-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">AB</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Aybike Biçen</h3>
+                                <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Veri Müh. & Doğrulama</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">Veri temizliği, doğruluk testi ve hata payı analizi.</p>
+                    </div>
+
+                    <!-- Yunus Emre Çürük -->
+                    <div class="card p-5 team-card border-t-4 border-t-slate-600">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold">YE</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Yunus Emre Çürük</h3>
+                                <span class="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">Backend & API</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">Veritabanı mimarisi ve API geliştirme.</p>
+                    </div>
+
+                    <!-- Işıl Kilinç -->
+                    <div class="card p-5 team-card border-t-4 border-t-pink-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold">IK</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Işıl Kilinç</h3>
+                                <span class="text-xs font-semibold text-pink-600 bg-pink-50 px-2 py-0.5 rounded">Ürün & UX/UI</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">"Sıfır Karmaşıklık" arayüz tasarımı ve ihtiyaç analizi.</p>
+                    </div>
+
+                    <!-- Nisa Nur Çuhadar -->
+                    <div class="card p-5 team-card border-t-4 border-t-sky-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center font-bold">NC</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Nisa Nur Çuhadar</h3>
+                                <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">Frontend Geliştirici</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">Kullanıcı arayüzü kodlaması ve web uyumluluğu.</p>
+                    </div>
+
+                    <!-- Mehmet Ali Türk -->
+                    <div class="card p-5 team-card border-t-4 border-t-indigo-500">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">MA</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Mehmet Ali Türk</h3>
+                                <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Fullstack Geliştirici</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">Sistem entegrasyonu ve teknik dökümantasyon.</p>
+                    </div>
+
+                    <!-- Rabia Gömeçoğlu (Güncellendi) -->
+                    <div class="card p-5 team-card border-t-4 border-t-orange-500 md:col-span-2 lg:col-span-3">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold">RG</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800">Rabia Gömeçoğlu</h3>
+                                <span class="text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded">İş Modeli & Pazar Stratejisi</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 pt-2 border-t border-slate-100">Freemium model kurgusu, pazar analizi ve ticari strateji geliştirme.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. YOL HARİTASI (ROADMAP) -->
+        <section id="roadmap" class="hidden fade-in max-w-4xl mx-auto space-y-6">
+            <header class="border-b border-slate-200 pb-4">
+                <h1 class="text-2xl font-bold text-slate-800">Proje Yol Haritası (Roadmap)</h1>
+                <p class="text-slate-500 mt-1">MVP'den Global Pazara Uzanan 3 Fazlı Strateji</p>
+            </header>
+
+            <div class="relative pl-8 space-y-8">
+                <div class="roadmap-line"></div>
+
+                <!-- FAZ 1 -->
+                <div class="relative bg-white p-6 rounded-lg border border-slate-200 shadow-sm z-10">
+                    <div class="absolute -left-[42px] top-6 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-4 ring-white">1</div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-slate-800">FAZ 1: MVP & Pilot (Mevcut)</h3>
+                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-1 rounded">Tamamlanıyor</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">Minimum Değerli Ürün (MVP) geliştirilmesi ve ilk saha testleri.</p>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>Excel Veri Yükleme Modülü</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>Hibrit Model (Croston + Prophet) Entegrasyonu</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>Akdeniz Cam A.Ş. ile Pilot Testler</li>
+                    </ul>
+                </div>
+
+                <!-- FAZ 2 -->
+                <div class="relative bg-white p-6 rounded-lg border border-slate-200 shadow-sm z-10">
+                    <div class="absolute -left-[42px] top-6 w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-4 ring-white">2</div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-slate-800">FAZ 2: Yerel Entegrasyon (12-18 Ay)</h3>
+                        <span class="bg-sky-100 text-sky-700 text-xs font-bold px-2 py-1 rounded">Geliştirme</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">Muhasebe yazılımları ile tam entegrasyon ve pazar genişlemesi.</p>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-sky-500 rounded-full mr-2"></span>Logo, Paraşüt, Mikro API Entegrasyonları</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-sky-500 rounded-full mr-2"></span>"Tek Tıkla" Sipariş Oluşturma</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-sky-500 rounded-full mr-2"></span>MAPE oranının %10'un altına indirilmesi</li>
+                    </ul>
+                </div>
+
+                <!-- FAZ 3 -->
+                <div class="relative bg-white p-6 rounded-lg border border-slate-200 shadow-sm z-10">
+                    <div class="absolute -left-[42px] top-6 w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-sm ring-4 ring-white">3</div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold text-slate-800">FAZ 3: Global & Otonom (18+ Ay)</h3>
+                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">Vizyon</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">Uluslararası açılım ve tam otonom karar sistemleri.</p>
+                    <ul class="space-y-2 text-sm text-slate-600">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></span>Otonom Sipariş (İnsan onayı olmadan alım)</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></span>Dinamik Fiyatlandırma Zekası</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></span>MENA Bölgesine (Orta Doğu) Açılım</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. AKADEMİK YÖNTEM -->
         <section id="teknoloji" class="hidden fade-in max-w-6xl mx-auto space-y-6">
             <header class="border-b border-slate-200 pb-4">
-                <h1 class="text-2xl font-bold text-slate-800">Teknik Mimari Analizi</h1>
-                <p class="text-slate-500 mt-1">Algoritma Yetkinlik Matrisi ve Entegrasyon Yapısı</p>
+                <h1 class="text-2xl font-bold text-slate-800">Akademik Yöntem ve Hibrit Mimari</h1>
+                <p class="text-slate-500 mt-1">Neden Tek Bir Algoritma Yetmez?</p>
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 card p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-slate-700">Algoritma Performans Radar Diyagramı</h4>
-                        <span class="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded">Canlı Metrikler</span>
+                        <h4 class="font-bold text-slate-700">Algoritma Yetkinlik Kıyaslaması</h4>
+                        <span class="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded">Radar Analizi</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="radarChart"></canvas>
@@ -198,60 +380,47 @@
                 
                 <div class="space-y-4">
                     <div class="card p-4 hover:border-emerald-400 cursor-pointer transition border-l-4 border-l-emerald-500 group" onclick="updateRadar('stat')">
-                        <h4 class="font-bold text-slate-800 text-sm group-hover:text-emerald-700">1. İstatistiksel Modeller</h4>
-                        <div class="flex flex-wrap gap-2 mt-2 mb-2">
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">Croston</span>
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">TSB</span>
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">Holt-Winters</span>
-                        </div>
-                        <p class="text-xs text-slate-500">
-                            <strong>Kullanım Alanı:</strong> Seyrek (Intermittent) veriler.
-                            <br>ML modellerinin "sıfır" değerlerinde aşırı öğrenme (overfitting) hatasını elimine eder.
+                        <h4 class="font-bold text-slate-800 text-sm group-hover:text-emerald-700">1. Croston & TSB</h4>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <strong>Kullanım:</strong> Yedek parça & Hırdavat.
+                            <br>Ayda 1-2 kez satılan "seyrek" verilerde, ML modellerinin yaptığı aşırı öğrenme (overfitting) hatasını engeller.
                         </p>
                     </div>
 
                     <div class="card p-4 hover:border-sky-400 cursor-pointer transition border-l-4 border-l-sky-500 group" onclick="updateRadar('prophet')">
                         <h4 class="font-bold text-slate-800 text-sm group-hover:text-sky-700">2. Facebook Prophet</h4>
-                        <div class="flex flex-wrap gap-2 mt-2 mb-2">
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">Mevsimsellik</span>
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">Tatil Etkisi</span>
-                        </div>
-                        <p class="text-xs text-slate-500">
-                            <strong>Kullanım Alanı:</strong> Güçlü mevsimsel döngüler.
-                            <br>Bayramlar, sömestr gibi takvimsel olayları modele dahil eder.
+                        <p class="text-xs text-slate-500 mt-1">
+                            <strong>Kullanım:</strong> Sezonluk Ürünler.
+                            <br>Türkiye takvimindeki bayramlar ve resmi tatiller modelin içine "regressor" olarak gömülüdür.
                         </p>
                     </div>
 
                     <div class="card p-4 hover:border-purple-400 cursor-pointer transition border-l-4 border-l-purple-500 group" onclick="updateRadar('ml')">
-                        <h4 class="font-bold text-slate-800 text-sm group-hover:text-purple-700">3. Ensemble Learning (ML)</h4>
-                        <div class="flex flex-wrap gap-2 mt-2 mb-2">
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">XGBoost</span>
-                            <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-1 rounded border border-slate-200">Random Forest</span>
-                        </div>
-                        <p class="text-xs text-slate-500">
-                            <strong>Kullanım Alanı:</strong> Karmaşık, çok değişkenli veriler.
-                            <br>Fiyat, stok, rakip verisi gibi dış faktörlerle (regressors) çalışır.
+                        <h4 class="font-bold text-slate-800 text-sm group-hover:text-purple-700">3. XGBoost (Ensemble)</h4>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <strong>Kullanım:</strong> Karmaşık Fiyatlama.
+                            <br>Döviz kuru, rakip fiyatı gibi dış faktörlerin satışa etkisini modeller.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. SİMÜLASYON TESTİ -->
+        <!-- 5. SİMÜLASYON TESTİ -->
         <section id="simulasyon" class="hidden fade-in max-w-6xl mx-auto space-y-6">
             <header class="flex flex-col md:flex-row justify-between items-center border-b border-slate-200 pb-4">
                 <div>
-                    <h1 class="text-2xl font-bold text-slate-800">Algoritmik Karar Destek Sistemi</h1>
-                    <p class="text-slate-500 mt-1">Veri Karakteristiğine Göre Otomatik Model Seçimi (Auto-Selection Logic)</p>
+                    <h1 class="text-2xl font-bold text-slate-800">Algoritma Doğrulama Testi (PoC)</h1>
+                    <p class="text-slate-500 mt-1">Sistemin Farklı Veri Tiplerine Adaptasyon Yeteneği</p>
                 </div>
                 <div class="flex gap-3 mt-4 md:mt-0 bg-white p-2 rounded-lg shadow-sm border border-slate-200">
                     <select id="simType" class="bg-transparent text-sm font-medium text-slate-700 focus:outline-none cursor-pointer">
-                        <option value="seasonal">Senaryo A: Mevsimsel Talep</option>
-                        <option value="intermittent">Senaryo B: Seyrek (Yedek Parça)</option>
+                        <option value="intermittent">Senaryo A: Yedek Parça (Kesikli)</option>
+                        <option value="seasonal">Senaryo B: Mevsimsel Talep</option>
                         <option value="trend">Senaryo C: Trend (Moda/Tech)</option>
                     </select>
-                    <button onclick="runSimulation()" class="bg-sky-700 hover:bg-sky-800 text-white px-4 py-1.5 rounded text-xs font-bold shadow transition flex items-center">
-                        Analizi Başlat
+                    <button onclick="runSimulation()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-1.5 rounded text-xs font-bold shadow transition flex items-center">
+                        Simülasyonu Başlat
                     </button>
                 </div>
             </header>
@@ -268,7 +437,7 @@
                 <div class="lg:col-span-4 flex flex-col gap-4">
                     <!-- Scoreboard -->
                     <div class="card p-4 bg-slate-50 h-1/2">
-                        <h5 class="text-[10px] font-bold text-slate-400 uppercase mb-3 border-b border-slate-200 pb-2 tracking-wider">RMSE Performans Metrikleri</h5>
+                        <h5 class="text-[10px] font-bold text-slate-400 uppercase mb-3 border-b border-slate-200 pb-2 tracking-wider">Hata Payı (RMSE - Düşük İyidir)</h5>
                         <div class="space-y-3 text-sm">
                             <div class="flex justify-between items-center">
                                 <span class="text-slate-600 flex items-center"><span class="w-2 h-2 rounded-full bg-sky-500 mr-2"></span>Prophet</span>
@@ -289,97 +458,13 @@
                     <div class="card p-5 h-1/2 flex flex-col justify-center border-l-4 border-l-slate-300 transition-colors duration-500" id="decisionBox">
                         <div class="flex items-center gap-2 mb-2">
                             <div class="w-2 h-2 rounded-full bg-slate-400" id="decisionLight"></div>
-                            <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sistem Kararı</h5>
+                            <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Oto-Karar Çıktısı</h5>
                         </div>
                         <h3 id="winnerText" class="text-lg font-bold text-slate-800 mb-2">Bekleniyor...</h3>
                         <p id="decisionText" class="text-xs text-slate-600 leading-snug">
-                            Lütfen yukarıdan bir senaryo seçip analizi başlatın.
+                            Lütfen bir senaryo seçip simülasyonu başlatın.
                         </p>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. SEKTÖREL UYUMLULUK -->
-        <section id="sektor" class="hidden fade-in max-w-6xl mx-auto space-y-6">
-            <header class="border-b border-slate-200 pb-4">
-                <h1 class="text-2xl font-bold text-slate-800">Sektörel Entegrasyon Matrisi</h1>
-                <p class="text-slate-500 mt-1">Farklı endüstriyel senaryolarda KobiScope değer önerisi</p>
-            </header>
-
-            <div class="card p-6 bg-white min-h-[400px]">
-                <div class="flex flex-col md:flex-row gap-4 items-center mb-8 bg-slate-50 p-4 rounded-lg border border-slate-100">
-                    <label class="font-bold text-slate-700 text-sm">Hedef Sektör Seçimi:</label>
-                    <select id="sectorSelect" onchange="renderSectorCard()" class="flex-1 bg-white border border-slate-300 rounded px-4 py-2 text-sm focus:ring-2 focus:ring-sky-500 outline-none shadow-sm cursor-pointer">
-                        <option value="default" disabled selected>Lütfen analiz edilecek sektörü seçiniz...</option>
-                        <option value="auto">Otomotiv Yedek Parça & Sanayi</option>
-                        <option value="textile">Hazır Giyim, Moda & Perakende</option>
-                        <option value="fmcg">Hızlı Tüketim & Süpermarket</option>
-                        <option value="electronics">Tüketici Elektroniği & Teknoloji</option>
-                    </select>
-                </div>
-
-                <!-- Dynamic Sector Card -->
-                <div id="sectorCardContent" class="hidden animate-fade-in">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                        <div class="space-y-6">
-                            <div>
-                                <h2 class="text-2xl font-bold text-sky-900 flex items-center" id="secTitle">Sektör Başlığı</h2>
-                                <div class="h-1 w-20 bg-sky-500 mt-2 rounded"></div>
-                            </div>
-                            
-                            <div class="bg-rose-50 p-4 rounded-lg border border-rose-100">
-                                <h4 class="text-xs font-bold text-rose-600 uppercase tracking-wide mb-2 flex items-center">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                                    Kritik Ağrı Noktası (Pain Point)
-                                </h4>
-                                <p class="text-slate-800 text-sm font-medium leading-relaxed" id="secPain">Problem tanımı...</p>
-                            </div>
-
-                            <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-100">
-                                <h4 class="text-xs font-bold text-emerald-600 uppercase tracking-wide mb-2 flex items-center">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    KobiScope Çözüm Mimarisi
-                                </h4>
-                                <p class="text-slate-800 text-sm font-medium leading-relaxed" id="secSolution">Çözüm tanımı...</p>
-                            </div>
-                        </div>
-
-                        <div class="bg-slate-50 rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-center">
-                            <h4 class="text-sm font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">Teknik Konfigürasyon Önerisi</h4>
-                            <ul class="space-y-4 text-sm text-slate-600">
-                                <li class="flex items-start">
-                                    <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">1</span>
-                                    <div>
-                                        <span class="block text-xs font-bold text-slate-400 uppercase">Önerilen Algoritma</span>
-                                        <span id="secAlgo" class="font-semibold text-slate-800">Algoritma Adı</span>
-                                    </div>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</span>
-                                    <div>
-                                        <span class="block text-xs font-bold text-slate-400 uppercase">Tahminleme Frekansı</span>
-                                        <span id="secFreq" class="font-semibold text-slate-800">Haftalık</span>
-                                    </div>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="w-6 h-6 rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</span>
-                                    <div>
-                                        <span class="block text-xs font-bold text-slate-400 uppercase">Tahmini ROI</span>
-                                        <span id="secRoi" class="font-bold text-emerald-600">%20 İyileşme</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Default State -->
-                <div id="sectorPlaceholder" class="text-center py-20">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-300 mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    </div>
-                    <p class="text-slate-400 text-sm">Analiz raporunu görüntülemek için yukarıdaki menüden sektör seçiniz.</p>
                 </div>
             </div>
         </section>
@@ -387,47 +472,42 @@
     </main>
 
     <script>
-        // --- 1. Navigation & Config ---
-        document.getElementById('lastUpdate').innerText = new Date().toLocaleDateString('tr-TR');
-
+        // --- 1. Navigation Logic ---
         function showSection(id) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
             document.getElementById(id).classList.remove('hidden');
             
-            // Sidebar syncing
             const links = document.querySelectorAll('.sidebar-link');
-            const map = {'ozet':0, 'teknoloji':1, 'simulasyon':2, 'sektor':3};
+            const map = {'ozet':0, 'ekip':1, 'roadmap':2, 'teknoloji':3, 'simulasyon':4};
             if(links[map[id]]) links[map[id]].classList.add('active');
         }
 
-        // --- 2. Charts Initialization ---
-        
-        // Market Gap Bubble Chart
+        // --- 2. Chart: Market Gap (Blue Ocean) ---
         const ctxMarket = document.getElementById('marketGapChart').getContext('2d');
         new Chart(ctxMarket, {
             type: 'bubble',
             data: {
                 datasets: [
                     {
-                        label: 'KobiScope (Hedef Konum)',
-                        data: [{x: 85, y: 88, r: 18}], 
-                        backgroundColor: 'rgba(14, 165, 233, 0.9)' // Sky-500
+                        label: 'KobiScope (Blue Ocean)',
+                        data: [{x: 85, y: 90, r: 20}], 
+                        backgroundColor: 'rgba(37, 99, 235, 0.9)' // Blue-600
                     },
                     {
-                        label: 'Excel / Manuel Takip',
+                        label: 'Manuel/Excel Takibi',
                         data: [{x: 15, y: 25, r: 12}], 
-                        backgroundColor: 'rgba(148, 163, 184, 0.6)' // Slate-400
+                        backgroundColor: 'rgba(148, 163, 184, 0.6)' 
                     },
                     {
-                        label: 'Global ERP Sistemleri',
-                        data: [{x: 90, y: 20, r: 14}], // High Tech, Low Affordability (High Cost)
-                        backgroundColor: 'rgba(239, 68, 68, 0.6)' // Red-500
+                        label: 'Global ERP (SAP vb.)',
+                        data: [{x: 90, y: 20, r: 14}], 
+                        backgroundColor: 'rgba(239, 68, 68, 0.6)' 
                     },
                     {
-                        label: 'Standart Muhasebe Yazılımları',
+                        label: 'Yerli Muhasebe Yazılımları',
                         data: [{x: 45, y: 65, r: 10}], 
-                        backgroundColor: 'rgba(245, 158, 11, 0.6)' // Amber-500
+                        backgroundColor: 'rgba(245, 158, 11, 0.6)' 
                     }
                 ]
             },
@@ -435,86 +515,50 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    x: { 
-                        title: { display: true, text: 'Teknolojik Kabiliyet (AI & Otomasyon)' },
-                        min: 0, max: 100,
-                        grid: { color: '#f1f5f9' }
-                    },
-                    y: { 
-                        title: { display: true, text: 'Fiyat Avantajı & Erişilebilirlik' },
-                        min: 0, max: 100,
-                        grid: { color: '#f1f5f9' }
-                    }
+                    x: { title: { display: true, text: 'Teknolojik Olgunluk (AI)' }, min: 0, max: 100 },
+                    y: { title: { display: true, text: 'Maliyet Etkinliği' }, min: 0, max: 100 }
                 },
-                plugins: {
-                    legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label;
-                            }
-                        }
-                    }
-                }
+                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }
             }
         });
 
-        // Tech Radar Chart
+        // --- 3. Chart: Radar ---
         const ctxRadar = document.getElementById('radarChart').getContext('2d');
         const radarChart = new Chart(ctxRadar, {
             type: 'radar',
             data: {
-                labels: ['Veri Ekonomisi', 'Hesaplama Hızı', 'Trend Yakalama', 'Mevsimsellik', 'Dış Değişkenler', 'Seyrek Veri Başarısı'],
+                labels: ['Veri Verimliliği', 'Hesaplama Hızı', 'Trend Yakalama', 'Mevsimsellik', 'Dış Değişkenler', 'Seyrek Veri Başarısı'],
                 datasets: [{
-                    label: 'Seçili Teknoloji Profili',
-                    data: [80, 90, 40, 40, 20, 95], // Default Stat
-                    backgroundColor: 'rgba(14, 165, 233, 0.2)',
-                    borderColor: '#0ea5e9',
-                    pointBackgroundColor: '#0ea5e9',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#0ea5e9'
+                    label: 'Seçili Yöntem Profili',
+                    data: [80, 90, 40, 40, 20, 95], // Default
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    borderColor: '#ef4444',
+                    pointBackgroundColor: '#ef4444',
+                    pointBorderColor: '#fff'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: {
-                    r: {
-                        suggestedMin: 0, suggestedMax: 100,
-                        angleLines: { color: '#e2e8f0' },
-                        grid: { color: '#e2e8f0' },
-                        pointLabels: { font: { size: 11, family: 'Inter' }, color: '#64748b' }
-                    }
-                },
+                scales: { r: { suggestedMin: 0, suggestedMax: 100, pointLabels: { font: { size: 11 } } } },
                 plugins: { legend: { display: false } }
             }
         });
 
         function updateRadar(type) {
-            let data = [];
-            let color = '';
-            if(type === 'stat') {
-                data = [95, 95, 30, 40, 10, 95];
-                color = '#10b981'; // Emerald
-            }
-            else if(type === 'prophet') {
-                data = [60, 70, 90, 95, 40, 20];
-                color = '#0ea5e9'; // Sky
-            }
-            else if(type === 'ml') {
-                data = [20, 40, 80, 80, 95, 40];
-                color = '#a855f7'; // Purple
-            }
+            let data = [], color = '';
+            if(type === 'stat') { data = [95, 95, 30, 40, 10, 95]; color = '#10b981'; }
+            else if(type === 'prophet') { data = [60, 70, 90, 95, 40, 20]; color = '#0ea5e9'; }
+            else if(type === 'ml') { data = [20, 40, 80, 80, 95, 40]; color = '#a855f7'; }
             
             radarChart.data.datasets[0].data = data;
             radarChart.data.datasets[0].borderColor = color;
             radarChart.data.datasets[0].pointBackgroundColor = color;
-            radarChart.data.datasets[0].backgroundColor = color + '33'; // Add transparency
+            radarChart.data.datasets[0].backgroundColor = color + '33';
             radarChart.update();
         }
 
-        // --- 3. Simulation Logic (Hardcoded Logic) ---
+        // --- 4. Simulation Logic ---
         const ctxSim = document.getElementById('simChart').getContext('2d');
         const simChart = new Chart(ctxSim, {
             type: 'line',
@@ -523,14 +567,8 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
-                plugins: { 
-                    tooltip: { mode: 'index' },
-                    legend: { position: 'top', labels: { usePointStyle: true } }
-                },
-                scales: { 
-                    x: { display: false },
-                    y: { grid: { color: '#f1f5f9' } }
-                }
+                plugins: { legend: { position: 'top' } },
+                scales: { x: { display: false }, y: { grid: { color: '#f1f5f9' } } }
             }
         });
 
@@ -542,155 +580,56 @@
             const text = document.getElementById('decisionText');
             const winnerTitle = document.getElementById('winnerText');
             
-            // Loading UI
-            btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
-            btn.innerHTML = 'Hesaplanıyor...';
-            
+            btn.disabled = true; btn.classList.add('opacity-75', 'cursor-not-allowed'); btn.innerHTML = 'Hesaplanıyor...';
             box.className = 'card p-5 h-1/2 flex flex-col justify-center border-l-4 border-l-slate-300';
             light.className = 'w-2 h-2 rounded-full bg-amber-400 animate-ping';
-            winnerTitle.innerText = "Model Seçiliyor...";
-            text.innerText = "Backtesting algoritmaları çalıştırılıyor...";
+            winnerTitle.innerText = "Model Seçiliyor..."; text.innerText = "Backtesting algoritmaları çalıştırılıyor...";
 
-            // Data Generation
             const days = 30;
             const labels = Array.from({length: days}, (_, i) => `T-${i}`);
             let actual=[], prophet=[], xgb=[], croston=[];
             
-            // Hardcoded "Realistic" Patterns based on selection
             for(let i=0; i<days; i++) {
-                let val = 100;
-                let noise = (Math.random()-0.5) * 10;
-                
+                let val = 100, noise = (Math.random()-0.5) * 10;
                 if(type === 'seasonal') {
-                    // Sine wave pattern
-                    val += Math.sin(i/2.5) * 60; 
-                    actual.push(val + noise);
-                    prophet.push(val + (Math.random()-0.5)*15); // Winner
-                    xgb.push(val + (Math.random()-0.5)*50); // High Error
-                    croston.push(100); // Flat line (Fail)
+                    val += Math.sin(i/2.5) * 60; actual.push(val + noise);
+                    prophet.push(val + (Math.random()-0.5)*15); xgb.push(val + (Math.random()-0.5)*50); croston.push(100);
                 } else if(type === 'trend') {
-                    // Upward Trend
-                    val += i * 5 + (i > 15 ? 30 : 0); // Jump
-                    actual.push(val + noise);
-                    prophet.push(val + (Math.random()-0.5)*40); // Slower adaptation
-                    xgb.push(val + (Math.random()-0.5)*12); // Winner (Catches jump)
-                    croston.push(100 + (i*2)); // Lagging
+                    val += i * 5 + (i > 15 ? 30 : 0); actual.push(val + noise);
+                    prophet.push(val + (Math.random()-0.5)*40); xgb.push(val + (Math.random()-0.5)*12); croston.push(100 + (i*2));
                 } else {
-                    // Intermittent (Zeros)
-                    val = Math.random() > 0.75 ? 120 + noise*5 : 0;
-                    actual.push(val);
-                    prophet.push(val === 0 ? 45 : 130); // Fails on zeros
-                    xgb.push(val === 0 ? 25 : 100);
-                    croston.push(val === 0 ? 0 : val + noise); // Winner (Handles zeros)
+                    val = Math.random() > 0.75 ? 120 + noise*5 : 0; actual.push(val);
+                    prophet.push(val === 0 ? 45 : 130); xgb.push(val === 0 ? 25 : 100); croston.push(val === 0 ? 0 : val + noise);
                 }
             }
 
             setTimeout(() => {
-                // Update Chart
                 simChart.data.labels = labels;
                 simChart.data.datasets = [
-                    { label: 'Gerçekleşen Talep', data: actual, borderColor: '#1e293b', borderDash:[5,5], borderWidth: 2, pointRadius:0, tension:0.1 },
+                    { label: 'Gerçek Veri', data: actual, borderColor: '#1e293b', borderDash:[5,5], borderWidth: 2, pointRadius:0, tension:0.1 },
                     { label: 'Prophet', data: prophet, borderColor: '#0ea5e9', borderWidth: 1.5, pointRadius:0 },
                     { label: 'XGBoost', data: xgb, borderColor: '#a855f7', borderWidth: 1.5, pointRadius:0 },
                     { label: 'Croston', data: croston, borderColor: '#10b981', borderWidth: 1.5, pointRadius:0 }
                 ];
                 simChart.update();
 
-                // Logic & Content
                 let sP, sX, sC, winnerName, winnerDesc, borderClass;
-                
                 if(type === 'seasonal') {
-                    sP = "12.4"; sX = "45.2"; sC = "88.1"; 
-                    winnerName = 'Prophet';
-                    winnerDesc = "Mevsimsellik bileşeni baskın. Prophet modeli, dönemsel dalgalanmaları %92 doğrulukla yakalayarak en düşük hata skorunu (RMSE) üretti.";
-                    borderClass = 'border-l-sky-500';
+                    sP = "12.4"; sX = "45.2"; sC = "88.1"; winnerName = 'Prophet'; borderClass = 'border-l-sky-500';
+                    winnerDesc = "Mevsimsellik bileşeni baskın. Prophet, tatil ve döngüsel hareketleri en iyi yakalayan model oldu.";
                 } else if(type === 'trend') {
-                    sP = "25.3"; sX = "8.7"; sC = "56.4"; 
-                    winnerName = 'XGBoost';
-                    winnerDesc = "Doğrusal olmayan trend değişimi tespit edildi. XGBoost (Gradient Boosting), yapısal kırılmayı en hızlı adapte olan model oldu.";
-                    borderClass = 'border-l-purple-500';
+                    sP = "25.3"; sX = "8.7"; sC = "56.4"; winnerName = 'XGBoost'; borderClass = 'border-l-purple-500';
+                    winnerDesc = "Doğrusal olmayan trend ve sıçramalar var. XGBoost bu karmaşık yapıyı en hızlı adapte olan model.";
                 } else {
-                    sP = "140.2"; sX = "65.8"; sC = "5.1"; 
-                    winnerName = 'Croston';
-                    winnerDesc = "Veri seti 'Intermittent' (Kesikli). Geleneksel modellerin aksine, Croston algoritması sıfır değerli günleri doğru yöneterek stok şişmesini engelledi.";
-                    borderClass = 'border-l-emerald-500';
+                    sP = "140.2"; sX = "65.8"; sC = "5.1"; winnerName = 'Croston'; borderClass = 'border-l-emerald-500';
+                    winnerDesc = "Veri seti 'Seyrek' (Intermittent). Croston algoritması sıfırları doğru yöneterek en iyi sonucu verdi.";
                 }
 
-                // Update UI
-                document.getElementById('scoreProphet').innerText = sP;
-                document.getElementById('scoreXGB').innerText = sX;
-                document.getElementById('scoreCroston').innerText = sC;
-                
-                light.className = 'w-2 h-2 rounded-full bg-emerald-500';
-                winnerTitle.innerText = winnerName + " Seçildi";
-                text.innerText = winnerDesc;
+                document.getElementById('scoreProphet').innerText = sP; document.getElementById('scoreXGB').innerText = sX; document.getElementById('scoreCroston').innerText = sC;
+                light.className = 'w-2 h-2 rounded-full bg-emerald-500'; winnerTitle.innerText = winnerName + " Seçildi"; text.innerText = winnerDesc;
                 box.className = `card p-5 h-1/2 flex flex-col justify-center border-l-4 transition-colors duration-500 ${borderClass} bg-slate-50`;
-
-                // Reset Button
-                btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                btn.innerHTML = 'Analizi Başlat';
-
+                btn.disabled = false; btn.classList.remove('opacity-75', 'cursor-not-allowed'); btn.innerHTML = 'Simülasyonu Başlat';
             }, 1200);
-        }
-
-        // --- 4. Sector Logic (Knowledge Base) ---
-        const sectorData = {
-            'auto': {
-                title: 'Otomotiv Yedek Parça',
-                pain: 'On binlerce SKU var ve çoğu yılda sadece birkaç kez satılıyor. Yanlış stoklama sermayeyi "ölü stok"a gömüyor.',
-                solution: 'KobiScope, kesikli talep (Intermittent Demand) modellerini devreye alarak, nadir satılan parçalar için sadece gerektiğinde sipariş açar.',
-                algo: 'Croston / TSB Algoritması',
-                freq: 'Aylık Gözden Geçirme',
-                roi: '%35 Stok Maliyeti Düşüşü'
-            },
-            'textile': {
-                title: 'Hazır Giyim & Moda',
-                pain: 'Ürün ömrü çok kısa (Sezonluk). Renk/Beden kırılımında talep tahmini yapmak zor. Trend kaçarsa ürün elde kalır.',
-                solution: 'Geçmiş sezon verilerini yeni ürün özellikleriyle eşleştirir. XGBoost ve Prophet kombinasyonu ile trendin yönünü erken tespit eder.',
-                algo: 'Hibrit (XGBoost + Prophet)',
-                freq: 'Haftalık Dinamik Planlama',
-                roi: '%15 Ciro Artışı (Yok Satmayı Önleme)'
-            },
-            'fmcg': {
-                title: 'Hızlı Tüketim (FMCG)',
-                pain: 'Raf ömrü kritik. Stok sayımı manuel yapıldığı için hatalı. Promosyon dönemlerinde talep patlaması tahmin edilemiyor.',
-                solution: 'Görüntü İşleme modülü ile raflar otomatik sayılır. Random Forest modeli, promosyonların satışa etkisini hesaplar.',
-                algo: 'Random Forest (Regresyon)',
-                freq: 'Günlük Sipariş Önerisi',
-                roi: '%50 Operasyonel İşgücü Tasarrufu'
-            },
-            'electronics': {
-                title: 'Tüketici Elektroniği',
-                pain: 'Teknoloji hızla eskiyor. Kur değişimleri ve rakip fiyatları talebi anlık etkiliyor.',
-                solution: 'Dışsal değişkenleri (Döviz kuru, Rakip Fiyatı) modele dahil edebilen çok değişkenli ML modelleri kullanır.',
-                algo: 'Multivariate XGBoost',
-                freq: 'Anlık/Günlük Fiyatlama Desteği',
-                roi: '%12 Kar Marjı İyileştirmesi'
-            }
-        };
-
-        function renderSectorCard() {
-            const val = document.getElementById('sectorSelect').value;
-            const card = document.getElementById('sectorCardContent');
-            const placeholder = document.getElementById('sectorPlaceholder');
-            
-            if(val === 'default') return;
-
-            const data = sectorData[val];
-            
-            // Populate
-            document.getElementById('secTitle').innerText = data.title;
-            document.getElementById('secPain').innerText = data.pain;
-            document.getElementById('secSolution').innerText = data.solution;
-            document.getElementById('secAlgo').innerText = data.algo;
-            document.getElementById('secFreq').innerText = data.freq;
-            document.getElementById('secRoi').innerText = data.roi;
-
-            // Toggle
-            placeholder.classList.add('hidden');
-            card.classList.remove('hidden');
         }
     </script>
 </body>
